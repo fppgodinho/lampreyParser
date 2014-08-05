@@ -1,0 +1,23 @@
+{
+    "main":           "index.html",
+    "name":           "Lamprey-Parser",
+    "description":    "Lamprey-Parser",
+    "version":        "0.0.0",
+    "keywords":       [ "node-webkit"],
+    "window":         {
+        "title":            "Tekuchi Converter",
+        "icon":             "media/16x16.png",
+        "toolbar":          false,
+        "frame":            true,
+        "width":            800,
+        "height":           500,
+        "position":         "center"
+    },
+    "dependencies":   {
+        "mysql":            "^2.3.2",
+        "mysql2":           "^0.12.3",
+        "csv":              "^0.4.0",
+        "tocsv":            "^0.0.2",
+        "to-csv":           "^0.0.2"
+    }
+}

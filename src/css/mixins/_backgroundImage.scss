@@ -1,0 +1,5 @@
+@mixin backgroundImage($url, $repeat)                                           {
+    background-image:   inline-image($url);
+    background-repeat:  $repeat;
+}
+

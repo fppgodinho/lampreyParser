@@ -1,0 +1,85 @@
+@import "base";
+
+@import "partials/fonts";
+
+@import "partials/global";
+
+// -----------------------------------------------------------------------------
+//{ region PLUGINS/DIRECTIVES
+//} endregion
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+//{ region STRUCTURE
+#MAIN                                                                           {
+  button:disabled                                                               {
+    opacity: 0.1;
+  }
+  
+  #MENU                                                                         {
+    display:        flex;
+    flex-direction: row;
+    
+  }
+  
+  #CONNECTION                                                                   {
+    form                                                                        {
+      display:        flex;
+      flex-direction: column;
+
+      .label                                                                    {
+        display:  inline-block;
+        width:    100px;
+      }
+
+      input.ng-invalid                                                          {
+        background-color: #FA787E;
+      }
+      input.ng-valid                                                            {
+        //background-color: #78FA89;
+      }
+    }
+  }
+
+  #RAW                                                                          {
+    thead                                                                       {
+    }
+    tbody                                                                       {
+    }
+  }
+  
+  #FIELDS                                                                       {
+    thead                                                                       {
+    }
+    tbody                                                                       {
+    }
+  }
+  
+  #APARTMENTS                                                                   {
+    thead                                                                       {
+    }
+    tbody                                                                       {
+    }
+  }
+  
+  #METADATA                                                                     {
+    thead                                                                       {
+    }
+    tbody                                                                       {
+    }
+  }
+  
+  #MODELS                                                                       {
+    #SUBMENU                                                                    {
+      display:        flex;
+      flex-direction: row;
+    }
+    
+    thead                                                                       {
+    }
+    tbody                                                                       {
+    }
+  }
+}
+//} endregion
+// -----------------------------------------------------------------------------
