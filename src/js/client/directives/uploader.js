@@ -5,11 +5,21 @@ angular.module('lampreyParser').directive('uploader', [function()               
         templateUrl:    'templates/directives/uploader.html',
         controller:     ['$scope', '$element',
             function($scope, $element)                                          {
-                var fileBrowser = $element.$("#FILE");
-//                
-//                $scope.browse = function()                                      {
-//                    console.log('HUmmmmm');
-//                }
+                var browser     = $element.find("#FILE");
+                browser.on('change', function(){ $scope.$apply(); })
+                
+                
+                
+                $scope.file     = null;
+                
+                $scope.browse   = function() { browser.click(); };
+                
+                $scope.$watch(function(){
+                    return (browser.files && browser.files.length)?browser.files[0]:null;
+                }, function(){
+                    console.log('Hummm', $scope.file);
+                });
+                
             }
         ]
     };
