@@ -20,6 +20,7 @@ angular.module('lampreyParser').directive('uploader', [function()               
                     console.log('Hummm', $scope.file);
                 });
                 
+                
             }
         ]
     };
