@@ -16,70 +16,22 @@
     opacity: 0.1;
   }
   
-  #MENU                                                                         {
-    display:        flex;
+  .line                                                                         {
+    display: flex;
     flex-direction: row;
     
-  }
-  
-  #CONNECTION                                                                   {
-    form                                                                        {
-      display:        flex;
-      flex-direction: column;
-
-      .label                                                                    {
-        display:  inline-block;
-        width:    100px;
-      }
-
-      input.ng-invalid                                                          {
-        background-color: #FA787E;
-      }
-      input.ng-valid                                                            {
-        //background-color: #78FA89;
-      }
-    }
-  }
-
-  #RAW                                                                          {
-    thead                                                                       {
-    }
-    tbody                                                                       {
+    .value{
+      display: inline-block;
     }
   }
   
-  #FIELDS                                                                       {
-    thead                                                                       {
-    }
-    tbody                                                                       {
-    }
-  }
-  
-  #APARTMENTS                                                                   {
-    thead                                                                       {
-    }
-    tbody                                                                       {
-    }
-  }
-  
-  #METADATA                                                                     {
-    thead                                                                       {
-    }
-    tbody                                                                       {
-    }
-  }
-  
-  #MODELS                                                                       {
-    #SUBMENU                                                                    {
-      display:        flex;
-      flex-direction: row;
-    }
-    
-    thead                                                                       {
-    }
-    tbody                                                                       {
-    }
-  }
 }
 //} endregion
 // -----------------------------------------------------------------------------
+
+.filePicker {
+  display: inline-block;
+}
+.folderPicker {
+  display: inline-block;
+}
