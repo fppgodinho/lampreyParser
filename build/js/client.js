@@ -104,6 +104,7 @@ angular.module('lampreyParser').directive('main', [function()                   
         templateUrl:    'templates/directives/main.html',
         controller:     ['$scope',
             function($scope)                                                    {
+                var fs          = require('fs');
                 var gui         = require('nw.gui');
                 //
                 $scope.selected         = 'connection';
@@ -112,14 +113,19 @@ angular.module('lampreyParser').directive('main', [function()                   
                 $scope.exportFolder     = null;
                 $scope.appFolder        = gui.App.dataPath + '\\Export';
                 $scope.loading          = false;
-                
                 //
-                var fs          = require('fs');
+                if (!fs.existsSync($scope.appFolder)) fs.mkdirSync($scope.appFolder);
+                //
+                var buffer      = [];
+                var tags        = {};
                 var stream      = null;
                 $scope.export = function()                                      {
                     if ($scope.loading || !$scope.sourceFile || !$scope.exportFolder) return;
                     var exportFile  = $scope.exportFolder.path + '/export.csv';
                     if (fs.existsSync(exportFile)) fs.truncateSync(exportFile, 0);
+                    var reportFile  = $scope.exportFolder.path + '/report.csv';
+                    if (fs.existsSync(reportFile)) fs.truncateSync(reportFile, 0);
+                    tags            = {};
                     buffer.length   = 0;
                     $scope.loading  = true;
                     stream          = fs.createReadStream($scope.sourceFile.path);
@@ -135,9 +141,8 @@ angular.module('lampreyParser').directive('main', [function()                   
                         $scope.$digest();
                     });
                 };
-
+                //
                 var leftover    = '';
-                var buffer      = [];
                 function readData(data)                                         {
                     while (data)                                                {
                         var eol     = data.indexOf('\n') + 1;
@@ -153,38 +158,62 @@ angular.module('lampreyParser').directive('main', [function()                   
                         }
                     }
                 }
-                
-                var saving = false; 
-                function writeData()                                            {
-                    if (saving || !$scope.exportFolder) return; saving = true;
-                    var exportFile  = $scope.exportFolder.path + '/export.csv';
-                    var line = buffer.shift();
-                    fs.appendFile(exportFile, line, function(err)               {
-                        saving = false;
-                        if (!err && buffer.length) writeData();
-                        else if (err) console.log(err);
-                        else if (stream) stream.resume();
-                        else console.log('Save done!');
-                    });
-                }
-                
+                //
                 function parseLine(line)                                        {
                     line = line.trim();
                     if (line.charAt(0) == '"' || line.charAt(0) =="'") line = line.substr(1);
                     if (line.charAt(line.length-1) == '"' || line.charAt(line.length-1) =="'") line = line.substr(0, line.length-1);
                     if (line.indexOf('*TAG:') < 0) return '';
                     var lineParts = line.split(" "); lineParts.shift();
-                    
-                    lineParts[2] = new Date(lineParts[2].substr(6), lineParts[2].substr(0, 2), lineParts[2].substr(3, 2), lineParts[3].substr(0, 2), lineParts[3].substr(3, 2), lineParts[3].substr(6, 2), lineParts[3].substr(9));
-                    lineParts.splice(3, 1);
-                    
+                    //
+                    lineParts.shift();
+                    lineParts.shift();
+                    //
+                    var datePart    = lineParts.shift();
+                    var timePart    = lineParts.shift();
+                    var tag         = lineParts.join(' ');
+                    var dateTime    = new Date(datePart.substr(6), datePart.substr(0, 2), datePart.substr(3, 2), timePart.substr(0, 2), timePart.substr(3, 2), timePart.substr(6, 2), timePart.substr(9));
+                    var date        = ("00" + dateTime.getDate()).substr(-2) + "/" + ("00" + dateTime.getMonth()).substr(-2) + "/" + dateTime.getFullYear();
+                    var time        = ("00" + dateTime.getHours()).substr(-2) + ":" + ("00" + dateTime.getMinutes()).substr(-2) + ":" + ("00" + dateTime.getSeconds()).substr(-2);
+                    //
+                    if (!tags[tag]) tags[tag]   = {time: dateTime, start: date + " " + time, aproaches: 1};
+                    tags[tag].end               = date + " " + time;
+                    if (dateTime - tags[tag].time > 5 * 1000) tags[tag].aproaches++;
+                    tags[tag].time = dateTime;
+                    //
                     line    = '';
-                    line    += lineParts.shift() + ',';
-                    line    += lineParts.shift() + ',';
-                    line    += lineParts.shift().getTime() + ',';
-                    line    += lineParts.join(' ');
-                    
+                    line    += dateTime.getTime() + ",";
+                    line    += date + ",";
+                    line    += time + ",";
+                    line    += tag;
+                    //
                     return line + '\n';
+                }
+                
+                var saving = false; 
+                function writeData()                                            {
+                    if (saving || !$scope.exportFolder) return; saving = true;
+                    var exportFile  = $scope.exportFolder.path + '/export.csv';
+                    var line        = buffer.shift();
+                    fs.appendFile(exportFile, line, function(err)               {
+                        saving = false;
+                        if (!err && buffer.length) writeData();
+                        else if (err) console.log(err);
+                        else if (stream) stream.resume();
+                        else writeReport();
+                    });
+                }
+                
+                function writeReport()                                          {
+                    if (!tags || !$scope.exportFolder) return;
+                    //
+                    var report = '';
+                    for (var tag in tags)                                       {
+                        report += (report?'\n':'') + tag + ',' + tags[tag].start + ',' + tags[tag].end + ',' + tags[tag].aproaches;
+                    }
+                    //
+                    var reportFile  = $scope.exportFolder.path + '/report.csv';
+                    fs.writeFile(reportFile, report);
                 }
                 
                 var nwWindow  = require('nw.gui').Window.get();
@@ -192,6 +221,7 @@ angular.module('lampreyParser').directive('main', [function()                   
                     if (!nwWindow.isDevToolsOpen()) nwWindow.showDevTools();
                     else nwWindow.closeDevTools();
                 };
+                // nwWindow.showDevTools();
             }
         ]
     };
