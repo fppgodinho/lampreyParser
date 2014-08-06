@@ -2,6 +2,7 @@
     <div class="line"><data-file-picker     id="FILE"   data-file="sourceFile"      data-init-folder="sourceFile?sourceFile.path:null"  data-ng-disabled="loading">Source File</data-file-picker><div class="value">{{sourceFile.path}}</div></div>
     <div class="line"><data-folder-picker   id="FOLDER" data-folder="exportFolder"  data-init-folder="appFolder || exportFolder.path"   data-ng-disabled="loading">Export Folder</data-folder-picker><div class="value">{{exportFolder.path}}</div></div>
     <div class="line">
+        <div>Aproaches Offset(seconds)<input type="text" data-ng-model="offset"></div>
         <button                             id="EXPORT" type="button" data-ng-click="export()" data-ng-disabled="!sourceFile || !appFolder || loading">Export</button>
         <!--<button                             id="DEBUG"  type="button" data-ng-click="switchDebug()">Debug</button>-->
     </div>

@@ -14,6 +14,7 @@ angular.module('lampreyParser').directive('main', [function()                   
                 $scope.exportFolder     = null;
                 $scope.appFolder        = gui.App.dataPath + '\\Export';
                 $scope.loading          = false;
+                $scope.offset           = 5;
                 //
                 if (!fs.existsSync($scope.appFolder)) fs.mkdirSync($scope.appFolder);
                 //
@@ -79,7 +80,7 @@ angular.module('lampreyParser').directive('main', [function()                   
                     //
                     if (!tags[tag]) tags[tag]   = {time: dateTime, start: date + " " + time, aproaches: 1};
                     tags[tag].end               = date + " " + time;
-                    if (dateTime - tags[tag].time > 5 * 1000) tags[tag].aproaches++;
+                    if (dateTime - tags[tag].time > $scope.offset * 1000) tags[tag].aproaches++;
                     tags[tag].time = dateTime;
                     //
                     line    = '';
